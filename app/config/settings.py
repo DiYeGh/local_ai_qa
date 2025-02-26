@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     # 文件上传配置
     UPLOAD_DIR: str = "uploads"
     MAX_FILE_SIZE: int = 30 * 1024 * 1024  # 30MB
-    ALLOWED_EXTENSIONS: List[str] = ["txt", "docx"]
+    ALLOWED_EXTENSIONS: List[str] = ["txt", "docx", "doc", "docm", "pdf", "ppt", "pptx"]
     
     # Milvus配置
     MILVUS_HOST: str = "localhost"

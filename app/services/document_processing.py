@@ -4,40 +4,27 @@ import docx
 from app.utils.text_splitter import TextSplitter
 from app.config.settings import settings
 import uuid
+from app.utils.extract_text import extract_text_from_file
 
 
 class DocumentProcessor:
     def __init__(self):
         self.text_splitter = TextSplitter()
 
-    def process_txt(self, file_path: str) -> Tuple[str, List[str]]:
-        """处理TXT文件"""
-        with open(file_path, 'r', encoding='utf-8') as f:
-            content = f.read()
-        return content, self.text_splitter.split_text(content)
-
-    def process_docx(self, file_path: str) -> Tuple[str, List[str]]:
-        """处理DOCX文件"""
-        doc = docx.Document(file_path)
-        content = "\n\n".join([paragraph.text for paragraph in doc.paragraphs if paragraph.text.strip()])
-        return content, self.text_splitter.split_text(content)
-
     async def process_document(self, file_path: str, original_filename: str) -> Tuple[str, str, List[str]]:
         """处理文档主函数"""
         # 生成文档ID
         doc_id = str(uuid.uuid4())
 
-        # 根据文件扩展名选择处理方法
-        file_ext = os.path.splitext(original_filename)[1].lower()
-
         try:
-            if file_ext == '.txt':
-                content, chunks = self.process_txt(file_path)
-            elif file_ext == '.docx':
-                content, chunks = self.process_docx(file_path)
-            else:
-                raise ValueError(f"不支持的文件类型：{file_ext}")
-
+            # 使用通用文本提取函数
+            content = extract_text_from_file(file_path)
+            if not content:
+                raise ValueError(f"无法提取文件内容：{original_filename}")
+            
+            # 分割文本
+            chunks = self.text_splitter.split_text(content)
+            
             return doc_id, content, chunks
 
         except Exception as e:

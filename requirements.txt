@@ -9,3 +9,6 @@ pymilvus
 python-docx
 pydantic
 pydantic-settings
+PyMuPDF
+python-pptx
+pywin32
